@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard Penyelidikan PBU 2026 — UPIK</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    background: #f0f2f5;
+    color: #1f2328;
+    min-height: 100vh;
+  }
+
+  /* ══════════════════════════════════
+     LOGIN SCREEN
+  ══════════════════════════════════ */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a3a5c 0%, #2563a8 100%);
+  }
+  .login-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 40px 36px 36px;
+    width: 380px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  }
+  .login-logo {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .login-logo-icon {
+    width: 52px; height: 52px;
+    background: #1a3a5c;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 10px;
+  }
+  .login-logo-title { font-size: 16px; font-weight: 800; color: #1a3a5c; }
+  .login-logo-sub   { font-size: 11px; color: #57606a; margin-top: 2px; }
+  .login-label { font-size: 12px; font-weight: 600; color: #1f2328; margin-bottom: 5px; display: block; }
+  .login-field {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #1f2328;
+    background: #f9fafb;
+    outline: none;
+    transition: border-color 0.15s;
+    margin-bottom: 16px;
+  }
+  .login-field:focus { border-color: #1a3a5c; background: #fff; }
+  .login-btn {
+    width: 100%;
+    padding: 11px;
+    background: #1a3a5c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    margin-top: 4px;
+  }
+  .login-btn:hover { opacity: 0.88; }
+  .login-err {
+    font-size: 12px;
+    color: #dc2626;
+    margin-top: 10px;
+    text-align: center;
+    min-height: 18px;
+  }
+  .login-hint {
+    text-align: center;
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid #f0f2f5;
+  }
+
+  /* ══════════════════════════════════
+     DASHBOARD SCREEN
+  ══════════════════════════════════ */
+  #dashboard-screen { display: none; }
+
+  /* ── HEADER ── */
+  .header {
+    background: #1a3a5c;
+    color: #fff;
+    padding: 0 20px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 60px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+  .header-brand { display: flex; flex-direction: column; flex-shrink: 0; }
+  .header-title { font-size: 13px; font-weight: 700; letter-spacing: 0.2px; white-space: nowrap; }
+  .header-sub   { font-size: 10px; color: #a8c4e0; white-space: nowrap; }
+
+  /* Search bar */
+  .header-search {
+    flex: 1;
+    max-width: 400px;
+    position: relative;
+    margin: 0 8px;
+  }
+  .header-search input {
+    width: 100%;
+    padding: 7px 12px 7px 34px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 12.5px;
+    font-family: inherit;
+    outline: none;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .header-search input::placeholder { color: rgba(255,255,255,0.5); }
+  .header-search input:focus {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.45);
+  }
+  .header-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    pointer-events: none;
+  }
+  .search-clear {
+    position: absolute;
+    right: 9px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    display: none;
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+  }
+  .search-clear:hover { color: #fff; }
+
+  /* User menu */
+  .header-user {
+    margin-left: auto;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .user-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .user-trigger:hover { background: rgba(255,255,255,0.1); }
+  .user-avatar {
+    width: 32px; height: 32px;
+    background: #2563a8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.3);
+    flex-shrink: 0;
+  }
+  .user-info { text-align: left; }
+  .user-name { font-size: 12px; font-weight: 600; color: #fff; line-height: 1.2; }
+  .user-role { font-size: 10px; color: #a8c4e0; }
+  .user-caret { font-size: 10px; color: rgba(255,255,255,0.5); margin-left: 2px; }
+
+  .user-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.14);
+    min-width: 200px;
+    overflow: hidden;
+    z-index: 300;
+    border: 1px solid #e5e7eb;
+  }
+  .user-dropdown.open { display: block; }
+  .dropdown-header {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid #f0f2f5;
+  }
+  .dropdown-name { font-size: 13px; font-weight: 700; color: #1f2328; }
+  .dropdown-role { font-size: 11px; color: #57606a; }
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #1f2328;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .dropdown-item:hover { background: #f7f8fa; }
+  .dropdown-item.danger { color: #dc2626; }
+  .dropdown-item.danger:hover { background: #fff5f5; }
+  .dropdown-divider { height: 1px; background: #f0f2f5; }
+
+  /* ── SHELL ── */
+  .shell { display: flex; min-height: calc(100vh - 60px); }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: #fff;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 0 24px;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+  .sidebar-lbl {
+    font-size: 10px;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 0 18px;
+    margin-bottom: 4px;
+    margin-top: 16px;
+  }
+  .sidebar-lbl:first-child { margin-top: 0; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #57606a;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.13s;
+    user-select: none;
+  }
+  .nav-item:hover { background: #f7f8fa; color: #1f2328; }
+  .nav-item.active {
+    background: #eff6ff;
+    color: #1a3a5c;
+    font-weight: 700;
+    border-left-color: #1a3a5c;
+  }
+  .nav-icon  { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+  .nav-badge {
+    margin-left: auto;
+    background: #1a3a5c;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+  }
+  .sidebar-divider { height: 1px; background: #f0f2f5; margin: 10px 18px; }
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 14px 18px 0;
+    font-size: 11px;
+    color: #9ca3af;
+    line-height: 1.6;
+  }
+
+  /* ── MAIN ── */
+  .main { flex: 1; min-width: 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 26px 20px 48px; }
+
+  /* ── PAGES ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── SEARCH RESULTS BANNER ── */
+  .search-banner {
+    display: none;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #1a3a5c;
+    margin-bottom: 16px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+  }
+  .search-banner.visible { display: flex; }
+  .search-banner-clear {
+    margin-left: auto;
+    font-size: 11px;
+    color: #3b82d4;
+    cursor: pointer;
+    font-weight: 600;
+    background: none;
+    border: none;
+    font-family: inherit;
+    padding: 0;
+  }
+
+  /* ── SECTION TITLE ── */
+  .sec-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #57606a;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 14px;
+    margin-top: 28px;
+  }
+
+  /* ── SUMMARY CARDS ── */
+  .cards-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 4px; }
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 18px 20px 15px;
+    border-top: 4px solid #3b82d4;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .card.c-intl { border-top-color: #7c5cd8; }
+  .card.c-nas  { border-top-color: #16a34a; }
+  .card.c-kpi  { border-top-color: #ea580c; }
+  .card-icon { font-size: 18px; margin-bottom: 5px; }
+  .card-val  { font-size: 34px; font-weight: 800; line-height: 1; }
+  .card-lbl  { font-size: 12px; color: #57606a; font-weight: 600; margin-top: 3px; }
+  .card-sub  { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+
+  /* ── CHARTS ── */
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-top: 6px; }
+  .chart-card { background: #fff; border-radius: 10px; padding: 20px 20px 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .chart-title { font-size: 11px; font-weight: 700; color: #57606a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+  .bar-wrap  { display: flex; align-items: flex-end; gap: 10px; height: 110px; }
+  .bar-item  { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
+  .bar-fill  { width: 100%; border-radius: 5px 5px 0 0; }
+  .bar-lbl   { font-size: 11px; color: #57606a; margin-top: 6px; text-align: center; }
+  .bar-num   { font-size: 13px; font-weight: 700; color: #1f2328; margin-bottom: 4px; }
+  .chart-note { font-size: 11px; color: #9ca3af; text-align: center; margin-top: 10px; }
+  .donut-wrap   { display: flex; align-items: center; gap: 18px; }
+  .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .legend-item  { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── TABLE ── */
+  .table-card { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); overflow: hidden; }
+  .table-toolbar {
+    padding: 13px 18px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f7f8fa;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .toolbar-title { font-size: 13px; font-weight: 700; }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .filters span { font-size: 11px; color: #57606a; font-weight: 600; }
+  .fbtn {
+    font-size: 11px; padding: 4px 11px;
+    border-radius: 14px; border: 1px solid #e5e7eb;
+    background: #fff; color: #57606a;
+    cursor: pointer; font-family: inherit; font-weight: 500;
+    transition: all 0.13s;
+  }
+  .fbtn.on, .fbtn:hover { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: #f7f8fa; }
+  th { padding: 9px 13px; text-align: left; font-size: 10.5px; font-weight: 700; color: #57606a; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
+  td { padding: 10px 13px; font-size: 12.5px; border-bottom: 1px solid #f0f2f5; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9fafb; }
+  tr.highlight td { background: #fefce8; }
+  .tfoot-bar { padding: 9px 18px; background: #f7f8fa; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #57606a; }
+
+  /* ── BADGES ── */
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 10px; font-weight: 700; white-space: nowrap; }
+  .b-jab  { background: #e0f2fe; color: #0c4a6e; }
+  .b-intl { background: #ede9fe; color: #5b21b6; }
+  .b-nas  { background: #dcfce7; color: #166534; }
+  .b-ok   { background: #d1fae5; color: #065f46; }
+  .b-q    { background: #fef3c7; color: #92400e; }
+
+  .t-tajuk { max-width: 270px; }
+  .t-main  { font-weight: 600; font-size: 12px; line-height: 1.4; margin-bottom: 2px; }
+  .t-auth  { font-size: 11px; color: #57606a; }
+  .t-conf  { font-size: 10px; color: #9ca3af; margin-top: 2px; }
+  .t-isbn  { font-size: 11px; color: #57606a; max-width: 155px; word-break: break-all; }
+  .t-pub   { font-size: 11px; color: #57606a; max-width: 145px; }
+  .pbu-tag { color: #3b82d4; font-weight: 700; }
+  a { color: #3b82d4; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── PROGRESS ── */
+  .progress-card { background: #fff; border-radius: 10px; padding: 22px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .progress-header-title { font-size: 13px; font-weight: 600; }
+  .progress-header-val   { font-size: 13px; font-weight: 700; color: #16a34a; }
+  .prog-row   { margin-bottom: 12px; }
+  .prog-lbl   { display: flex; justify-content: space-between; font-size: 11px; color: #57606a; margin-bottom: 4px; }
+  .prog-track { background: #f0f2f5; border-radius: 4px; height: 8px; overflow: hidden; }
+  .prog-fill  { height: 100%; border-radius: 4px; }
+  .prog-stats { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 16px; padding-top: 14px; border-top: 1px solid #f0f2f5; }
+  .prog-stat  { font-size: 12px; color: #57606a; }
+
+  /* ── ACTIVITIES ── */
+  .act-list { display: flex; flex-direction: column; gap: 12px; }
+  .act-item { background: #fff; border-radius: 10px; padding: 16px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); display: flex; gap: 16px; align-items: flex-start; }
+  .act-dot-col { display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
+  .act-dot  { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .act-line { width: 2px; background: #e5e7eb; flex: 1; margin-top: 5px; min-height: 24px; }
+  .act-item:last-child .act-line { display: none; }
+  .act-body  { flex: 1; }
+  .act-title { font-size: 13px; font-weight: 600; color: #1f2328; }
+  .act-meta  { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+  .act-desc  { font-size: 12px; color: #57606a; margin-top: 5px; line-height: 1.5; }
+
+  /* ── REPORTS ── */
+  .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .report-card { background: #fff; border-radius: 10px; padding: 20px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); border-left: 4px solid #3b82d4; }
+  .report-card.r-green  { border-left-color: #16a34a; }
+  .report-card.r-purple { border-left-color: #7c5cd8; }
+  .report-card.r-orange { border-left-color: #ea580c; }
+  .report-icon  { font-size: 22px; margin-bottom: 8px; }
+  .report-title { font-size: 14px; font-weight: 700; color: #1f2328; margin-bottom: 4px; }
+  .report-desc  { font-size: 12px; color: #57606a; line-height: 1.5; margin-bottom: 14px; }
+  .report-btn { display: inline-block; font-size: 11px; font-weight: 600; padding: 5px 14px; border-radius: 6px; background: #1a3a5c; color: #fff; cursor: pointer; border: none; font-family: inherit; transition: opacity 0.15s; }
+  .report-btn:hover { opacity: 0.85; }
+  .report-stat-row { display: flex; gap: 18px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f2f5; flex-wrap: wrap; }
+  .report-stat { font-size: 12px; color: #57606a; }
+
+  /* ── FOOTER ── */
+  .footer { text-align: center; margin-top: 40px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 11px; color: #9ca3af; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { width: 56px; }
+    .nav-item span:not(.nav-icon), .sidebar-lbl, .sidebar-footer, .nav-badge { display: none; }
+    .nav-item { justify-content: center; padding: 10px 0; gap: 0; }
+    .sidebar-divider { margin: 8px 10px; }
+    .header-search { max-width: 220px; }
+  }
+  @media (max-width: 768px) {
+    .cards-row  { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .report-grid { grid-template-columns: 1fr; }
+    .header-brand { display: none; }
+    .user-info { display: none; }
+  }
+  @media (max-width: 480px) {
+    .cards-row { grid-template-columns: 1fr 1fr; }
+    th, td { padding: 8px 9px; }
+    .header-search { max-width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     LOGIN SCREEN
+═══════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">🔬</div>
+      <div class="login-logo-title">UPIK — PBU 2026</div>
+      <div class="login-logo-sub">Unit Penyelidikan, Inovasi dan Komersialan</div>
+    </div>
+    <label class="login-label" for="inp-user">No. Pekerja / Email</label>
+    <input class="login-field" id="inp-user" type="text" placeholder="Contoh: P12345 atau nama@poli.edu.my" autocomplete="username"/>
+    <label class="login-label" for="inp-pass">Kata Laluan</label>
+    <input class="login-field" id="inp-pass" type="password" placeholder="Masukkan kata laluan" autocomplete="current-password"/>
+    <button class="login-btn" onclick="doLogin()">Log Masuk</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-hint">
+      Demo — guna sebarang ID &amp; kata laluan untuk masuk
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     DASHBOARD SCREEN
+═══════════════════════════════════════════ -->
+<div id="dashboard-screen">
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="header-title">UPIK — Dashboard PBU</div>
+      <div class="header-sub">Penyelidikan Staf · Tahun 2026</div>
+    </div>
+
+    <!-- Search bar -->
+    <div class="header-search">
+      <span class="header-search-icon">🔍</span>
+      <input type="text" id="global-search" placeholder="Cari tajuk, penulis, jabatan..." oninput="onSearch(this.value)"/>
+      <button class="search-clear" id="search-clear" onclick="clearSearch()" title="Kosongkan carian">✕</button>
+    </div>
+
+    <!-- User menu -->
+    <div class="header-user">
+      <div class="user-trigger" onclick="toggleDropdown()">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name-display">—</div>
+          <div class="user-role">Pegawai UPIK</div>
+        </div>
+        <span class="user-caret">▾</span>
+      </div>
+      <div class="user-dropdown" id="user-dropdown">
+        <div class="dropdown-header">
+          <div class="dropdown-name" id="dropdown-name">—</div>
+          <div class="dropdown-role">KUPIK · Unit UPIK</div>
+        </div>
+        <div class="dropdown-item" onclick="closeDropdown()">⚙️ <span>Profil Saya</span></div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="doLogout()">🔓 <span>Log Keluar</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── SHELL ── -->
+  <div class="shell">
+
+    <!-- ── SIDEBAR ── -->
+    <nav class="sidebar">
+      <div class="sidebar-lbl">Menu</div>
+      <div class="nav-item active" onclick="navTo('home', this)">
+        <span class="nav-icon">🏠</span><span>Home</span>
+      </div>
+      <div class="nav-item" onclick="navTo('activities', this)">
+        <span class="nav-icon">📋</span><span>Activities</span>
+        <span class="nav-badge">8</span>
+      </div>
+      <div class="nav-item" onclick="navTo('reports', this)">
+        <span class="nav-icon">📊</span><span>Reports</span>
+      </div>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-lbl">Tapis Cepat</div>
+      <div class="nav-item" onclick="navTo('home',this);setTimeout(()=>quickFilter('JTMK'),80)">
+        <span class="nav-icon">🏫</span><span>JTMK</span>
+      </div>
+      <div class="nav-item" onclick="navTo('home',this);setTimeout(()=>quickFilter('JPA'),80)">
+        <span class="nav-icon">🏛️</span><span>JPA</span>
+      </div>
+      <div class="nav-item" onclick="navTo('home',this);setTimeout(()=>quickFilter('ANTARABANGSA'),80)">
+        <span class="nav-icon">🌍</span><span>Antarabangsa</span>
+      </div>
+
+      <div class="sidebar-footer">
+        <div style="font-weight:600;color:#57606a;font-size:11px;">UPIK Politeknik</div>
+        <div>Data Penyelidikan 2026</div>
+        <div style="margin-top:6px;font-size:10px;">Made with IBM Bob</div>
+      </div>
+    </nav>
+
+    <!-- ── MAIN ── -->
+    <div class="main">
+      <div class="container">
+
+        <!-- Search results banner -->
+        <div class="search-banner" id="search-banner">
+          <span id="search-banner-text">🔍 Menunjukkan hasil carian…</span>
+          <button class="search-banner-clear" onclick="clearSearch()">✕ Kosongkan</button>
+        </div>
+
+        <!-- ════ PAGE: HOME ════ -->
+        <div id="page-home" class="page active">
+
+          <div class="sec-title">Ringkasan KPI</div>
+          <div class="cards-row">
+            <div class="card">
+              <div class="card-icon">📄</div>
+              <div class="card-val">8</div>
+              <div class="card-lbl">Jumlah Penerbitan</div>
+              <div class="card-sub">Tahun 2026</div>
+            </div>
+            <div class="card c-intl">
+              <div class="card-icon">🌍</div>
+              <div class="card-val">7</div>
+              <div class="card-lbl">Antarabangsa</div>
+              <div class="card-sub">87.5% daripada jumlah</div>
+            </div>
+            <div class="card c-nas">
+              <div class="card-icon">🏠</div>
+              <div class="card-val">1</div>
+              <div class="card-lbl">Nasional</div>
+              <div class="card-sub">12.5% daripada jumlah</div>
+            </div>
+            <div class="card c-kpi">
+              <div class="card-icon">✅</div>
+              <div class="card-val">100%</div>
+              <div class="card-lbl">Sudah Terbit</div>
+              <div class="card-sub">8/8 penerbitan terbit</div>
+            </div>
+          </div>
+
+          <div class="sec-title">Analisa &amp; Visualisasi</div>
+          <div class="charts-row">
+            <div class="chart-card">
+              <div class="chart-title">Penerbitan Ikut Jabatan</div>
+              <div class="bar-wrap">
+                <div class="bar-item"><div class="bar-num">6</div><div class="bar-fill" style="height:100%;background:#3b82d4;"></div><div class="bar-lbl">JTMK</div></div>
+                <div class="bar-item"><div class="bar-num">1</div><div class="bar-fill" style="height:16.7%;background:#7c5cd8;"></div><div class="bar-lbl">JPA</div></div>
+                <div class="bar-item"><div class="bar-num">1</div><div class="bar-fill" style="height:16.7%;background:#16a34a;"></div><div class="bar-lbl">PBU</div></div>
+              </div>
+              <div class="chart-note">JTMK — 75% daripada semua penerbitan</div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Tahap Penerbitan</div>
+              <div class="donut-wrap" style="margin-top:6px;">
+                <svg width="100" height="100" viewBox="0 0 36 36" style="flex-shrink:0;">
+                  <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f2f5" stroke-width="4"/>
+                  <circle cx="18" cy="18" r="15.9" fill="none" stroke="#7c5cd8" stroke-width="4" stroke-dasharray="87.5 12.5" stroke-dashoffset="25"/>
+                  <circle cx="18" cy="18" r="15.9" fill="none" stroke="#16a34a" stroke-width="4" stroke-dasharray="12.5 87.5" stroke-dashoffset="-62.5"/>
+                  <text x="18" y="17" text-anchor="middle" font-size="6" font-weight="800" fill="#1f2328">87.5%</text>
+                  <text x="18" y="22.5" text-anchor="middle" font-size="3.5" fill="#57606a">Intl</text>
+                </svg>
+                <div class="donut-legend">
+                  <div class="legend-item"><div class="dot" style="background:#7c5cd8;"></div><span><strong>7</strong> Antarabangsa <span style="color:#9ca3af;">(87.5%)</span></span></div>
+                  <div class="legend-item"><div class="dot" style="background:#16a34a;"></div><span><strong>1</strong> Nasional <span style="color:#9ca3af;">(12.5%)</span></span></div>
+                </div>
+              </div>
+              <div class="chart-note">Majoriti penerbitan di peringkat antarabangsa</div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Penerbitan Ikut Sukuan KPI</div>
+              <div class="bar-wrap">
+                <div class="bar-item"><div class="bar-num" style="color:#9ca3af;">0</div><div class="bar-fill" style="height:2%;background:#e5e7eb;"></div><div class="bar-lbl">S1</div></div>
+                <div class="bar-item"><div class="bar-num">4</div><div class="bar-fill" style="height:100%;background:#ea580c;"></div><div class="bar-lbl">S2</div></div>
+                <div class="bar-item"><div class="bar-num">4</div><div class="bar-fill" style="height:100%;background:#3b82d4;"></div><div class="bar-lbl">S3</div></div>
+                <div class="bar-item"><div class="bar-num" style="color:#9ca3af;">–</div><div class="bar-fill" style="height:2%;background:#e5e7eb;"></div><div class="bar-lbl">S4</div></div>
+              </div>
+              <div class="chart-note">Agihan seimbang antara Sukuan 2 &amp; 3</div>
+            </div>
+          </div>
+
+          <div class="sec-title" style="margin-top:28px;">Senarai Penerbitan Penyelidikan 2026</div>
+          <div class="table-card">
+            <div class="table-toolbar">
+              <div class="toolbar-title">Semua Rekod</div>
+              <div class="filters">
+                <span>Tapis:</span>
+                <button id="fb-all"  class="fbtn on" onclick="filter('all',this)">Semua</button>
+                <button id="fb-jtmk" class="fbtn"    onclick="filter('JTMK',this)">JTMK</button>
+                <button id="fb-jpa"  class="fbtn"    onclick="filter('JPA',this)">JPA</button>
+                <button id="fb-intl" class="fbtn"    onclick="filter('ANTARABANGSA',this)">Antarabangsa</button>
+                <button id="fb-nas"  class="fbtn"    onclick="filter('NASIONAL',this)">Nasional</button>
+                <button id="fb-q2"   class="fbtn"    onclick="filter('Q2',this)">Sukuan 2</button>
+                <button id="fb-q3"   class="fbtn"    onclick="filter('Q3',this)">Sukuan 3</button>
+              </div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th><th>Jabatan</th>
+                    <th>Tajuk Penyelidikan &amp; Penulis</th>
+                    <th>Penerbit / Seminar</th>
+                    <th>ISBN / ISSN / DOI</th>
+                    <th>Tarikh Terbit</th>
+                    <th>Tahap</th><th>Sukuan</th><th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody">
+                  <tr data-j="JPA" data-t="ANTARABANGSA" data-s="Q3" data-search="kefahaman pengamalan pelajar pendidikan moral altruisme halimatus saadiah siti nazilah suntheren JPA">
+                    <td style="font-weight:800;color:#3b82d4;">1</td>
+                    <td><span class="badge b-jab">JPA</span></td>
+                    <td class="t-tajuk">
+                      <div class="t-main">Kefahaman dan Pengamalan Pelajar Pendidikan Moral Terhadap Konsep Altruisme</div>
+                      <div class="t-auth">Halimatus Saadiah Kariya · Siti Nazilah Hamzah · Suntheren Yoganathan</div>
+                      <div class="t-conf">7TH ICBEISS 2026</div>
+                    </td>
+                    <td class="t-pub">Asian Scholars Network</td>
+                    <td class="t-isbn"><a href="https://doi.org/10.55057/ijares.2026.8.5.12" target="_blank">DOI: 10.55057/ijares.2026.8.5.12</a></td>
+                    <td style="font-size:11px;white-space:nowrap;">1 Ogos 2026</td>
+                    <td><span class="badge b-intl">Antarabangsa</span></td>
+                    <td><span class="badge b-q">Q3</span></td>
+                    <td><span class="badge b-ok">✓ Terbit</span></td>
+                  </tr>
+                  <tr data-j="JTMK" data-t="ANTARABANGSA" data-s="Q3" data-search="polytechnic students AI AGI AGS digital TVET letchumanan shanmugam geetha nadesan suntheren JTMK">
+                    <td style="font-weight:800;color:#3b82d4;">2</td>
+                    <td><span class="badge b-jab">JTMK</span></td>
+                    <td class="t-tajuk">
+                      <div class="t-main">How Do Polytechnic Students Perceive the Impact of Advanced AI (AGI and AGS) on the Future of Digital TVET Practices?</div>
+                      <div class="t-auth">Letchumanan Shanmugam · Geetha Nadesan · Suntheren Yoganathan</div>
+                      <div class="t-conf">IRISECON 2026</div>
+                    </td>
+                    <td class="t-pub">IRISECON 2026</td>
+                    <td class="t-isbn">e-ISBN: 978-967-2765-27-1</td>
+                    <td style="font-size:11px;white-space:nowrap;">30 Julai 2026</td>
+                    <td><span class="badge b-intl">Antarabangsa</span></td>
+                    <td><span class="badge b-q">Q3</span></td>
+                    <td><span class="badge b-ok">✓ Terbit</span></td>
+                  </tr>
+                  <tr data-j="JTMK" data-t="ANTARABANGSA" data-s="Q3" data-search="POWLinkBudget mobile application power link budget masturina natalia mohd dinil nur naimah JTMK AIP">
+                    <td style="font-weight:800;color:#3b82d4;">3</td>
+                    <td><span class="badge b-jab">JTMK</span></td>
+                    <td class="t-tajuk">
+                      <div class="t-main">POWLinkBudget: Mobile Application for Power Link Budget Learning</div>
+                      <div class="t-auth">Masturina Natalia Mohd Nor · Mohd Dinil Haq Sahbudin · Nur Naimah Mohamad</div>
+                      <div class="t-conf">ICoESAT 2025 / AIP Conference Proceedings</div>
+                    </td>
+                    <td class="t-pub">AIP Conference Proceedings</td>
+                    <td class="t-isbn"><a href="https://doi.org/10.1063/5.0318324" target="_blank">DOI: 10.1063/5.0318324</a></td>
+                    <td style="font-size:11px;white-space:nowrap;">27 Mei 2026</td>
+                    <td><span class="badge b-intl">Antarabangsa</span></td>
+                    <td><span class="badge b-q">Q3</span></td>
+                    <td><span class="badge b-ok">✓ Terbit</span></td>
+                  </tr>
+                  <tr data-j="JTMK" data-t="NASIONAL" data-s="Q3" data-search="pengurusan sukan ragbi wanita politeknik malaysia hermizul rosli muhamad fikri JTMK nasional">
+                    <td style="font-weight:800;color:#3b82d4;">4</td>
+                    <td><span class="badge b-jab">JTMK</span></td>
+                    <td class="t-tajuk">
+                      <div class="t-main">Pengurusan Sukan Ragbi Wanita di Politeknik Malaysia: Cabaran, Strategi dan Pembangunan</div>
+                      <div class="t-auth">Hermizul Napis · Rosli Rais · Muhamad Fikri Shahkhirin Birah</div>
+                      <div class="t-conf">E-Digest Impak HEP Inovasi POLYCC Kebangsaan</div>
+                    </td>
+                    <td class="t-pub">Politeknik Banting Selangor</td>
+                    <td class="t-isbn">e-ISBN: 978-967-2747-41-3</td>
+                    <td style="font-size:11px;white-space:nowrap;">Julai 2026</td>
+                    <td><span class="badge b-nas">Nasional</span></td>
+                    <td><span class="badge b-q">Q3</span></td>
+                    <td><span class="badge b-ok">✓ Terbit</span></td>
+                  </tr>
+                  <tr data-j="JTMK" data-t="ANTARABANGSA" data-s="Q2" data-search="RFID radio frequency identification community system norhanisha azrayhafizi rishanthan natteshwar JTMK UUM">
+                    <td style="font-weight:800;color:#3b82d4;">5</td>
+                    <td><span class="badge b-jab">JTMK</span></td>
+                    <td class="t-tajuk">
+                      <div class="t-main">Improving the Community System with Radio Frequency Identification (RFID) Technology</div>
+                      <div class="t-auth">Ts. Dr. Norhanisha Yusof <span class="pbu-tag">(PBU)</span> · Azrayhafizi Matzin · Rishanthan Vijayakumaran · Natteshwar Varma Reddy</div>
+                      <div class="t-conf">Journal of Digital System Development, UUM</div>
+                    </td>
+                    <td class="t-pub">Journal of Digital System Development, UUM</td>
+                    <td class="t-isbn">e-ISSN: 3009-156X<br/><a href="https://doi.org/10.32890/jdsd2026.4.1.5" target="_blank">DOI: 10.32890/jdsd2026.4.1.5</a></td>
+                    <td style="font-size:11px;white-space:nowrap;">1 Apr 2026</td>
+                    <td><span class="badge b-intl">Antarabangsa</span></td>
+                    <td><span class="badge b-q">Q2</span></td>
+                    <td><span class="badge b-ok">✓ Terbit</span></td>
+                  </tr>
+                  <tr data-j="JTMK" data-t="ANTARABANGSA" data-s="Q2" data-search="TRIZ methodology problem solving computing education nurkhuzaimah fazreen saffa raihan nursyahida JTMK atlantis">
+                    <td style="font-weight:800;color:#3b82d4;">6</td>
+                    <td><span class="badge b-jab">JTMK</span></td>
+                    <td class="t-tajuk">
+                      <div class="t-main">Acceptance of TRIZ Methodology Problem-Solving in Computing Education: Qualitative Study</div>
+                      <div class="t-auth">Dr. Nurkhuzaimah Fazreen Mohd Jalaluddin <span class="pbu-tag">(PBU)</span> · Saffa Raihan · Nursyahida Mokhtar · Nor Anis Asma + 2 lain</div>
+                      <div class="t-conf">ICAR-T1 2025 — Atlantis Press</div>
+                    </td>
+                    <td class="t-pub">Atlantis Press</td>
+                    <td class="t-isbn">E-ISBN: 978-94-6239-636-4<br/><a href="https://doi.org/10.2991/978-94-6239-636-4_3" target="_blank">DOI: 10.2991/...</a></td>
+                    <td style="font-size:11px;white-space:nowrap;">28 Apr 2026</td>
+                    <td><span class="badge b-intl">Antarabangsa</span></td>
+                    <td><span class="badge b-q">Q2</span></td>
+                    <td><span class="badge b-ok">✓ Terbit</span></td>
+                  </tr>
+                  <tr data-j="JTMK" data-t="ANTARABANGSA" data-s="Q2" data-search="YUAN chinese language learning mobile application norhanisha kong ji yu ivan ding chiu nor hanina JTMK AIP">
+                    <td style="font-weight:800;color:#3b82d4;">7</td>
+                    <td><span class="badge b-jab">JTMK</span></td>
+                    <td class="t-tajuk">
+                      <div class="t-main">YUAN: An Interactive Mobile Application for Chinese Language Learning Through Engaging Pedagogical Strategies and Adaptive Feedback</div>
+                      <div class="t-auth">Ts. Dr. Norhanisha Yusof <span class="pbu-tag">(PBU)</span> · Kong Ji Yu Ivan · Ding Chiu Le · Nor Hanina Zainal Abidin + 2 lain</div>
+                      <div class="t-conf">ICoESAT 2025 / AIP Conference Proceedings</div>
+                    </td>
+                    <td class="t-pub">AIP Conference Proceedings</td>
+                    <td class="t-isbn"><a href="https://doi.org/10.1063/5.0318324" target="_blank">DOI: 10.1063/5.0318324</a></td>
+                    <td style="font-size:11px;white-space:nowrap;">27 Mei 2026</td>
+                    <td><span class="badge b-intl">Antarabangsa</span></td>
+                    <td><span class="badge b-q">Q2</span></td>
+                    <td><span class="badge b-ok">✓ Terbit</span></td>
+                  </tr>
+                  <tr data-j="JTMK" data-t="ANTARABANGSA" data-s="Q2" data-search="usability evaluation mobile learning hearing impaired children nor hanina nor laily munya saleh norhanisha JTMK AIP">
+                    <td style="font-weight:800;color:#3b82d4;">8</td>
+                    <td><span class="badge b-jab">JTMK</span></td>
+                    <td class="t-tajuk">
+                      <div class="t-main">A Usability Evaluation Model for Mobile Learning for Hearing Impaired Children</div>
+                      <div class="t-auth">Nor Hanina Zainal Abidin · PM. Dr. Nor Laily Hashim · Dr. Munya Saleh · Ts. Dr. Norhanisha Yusof <span class="pbu-tag">(PBU)</span></div>
+                      <div class="t-conf">ICoESAT 2025 / AIP Conference Proceedings</div>
+                    </td>
+                    <td class="t-pub">AIP Conference Proceedings</td>
+                    <td class="t-isbn"><a href="https://doi.org/10.1063/5.0318957" target="_blank">DOI: 10.1063/5.0318957</a></td>
+                    <td style="font-size:11px;white-space:nowrap;">27 Mei 2026</td>
+                    <td><span class="badge b-intl">Antarabangsa</span></td>
+                    <td><span class="badge b-q">Q2</span></td>
+                    <td><span class="badge b-ok">✓ Terbit</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tfoot-bar">
+              <span id="count">Menunjukkan 8 daripada 8 rekod</span>
+              <span>Status Keseluruhan: <strong style="color:#16a34a;">Semua Sudah Terbit ✓</strong></span>
+            </div>
+          </div>
+
+          <div class="sec-title" style="margin-top:28px;">Perkembangan KPI Ikut Sukuan</div>
+          <div class="progress-card">
+            <div class="progress-header">
+              <div class="progress-header-title">Pencapaian Penerbitan Penyelidikan PBU Tahun 2026</div>
+              <div class="progress-header-val">8 Penerbitan Terbit</div>
+            </div>
+            <div class="prog-row">
+              <div class="prog-lbl"><span>Sukuan 1 (Jan – Mac 2026)</span><span style="color:#9ca3af;">0 penerbitan</span></div>
+              <div class="prog-track"><div class="prog-fill" style="width:0%;background:#9ca3af;"></div></div>
+            </div>
+            <div class="prog-row">
+              <div class="prog-lbl"><span>Sukuan 2 (Apr – Jun 2026)</span><span style="font-weight:700;color:#ea580c;">4 penerbitan</span></div>
+              <div class="prog-track"><div class="prog-fill" style="width:50%;background:#ea580c;"></div></div>
+            </div>
+            <div class="prog-row">
+              <div class="prog-lbl"><span>Sukuan 3 (Jul – Sep 2026)</span><span style="font-weight:700;color:#3b82d4;">4 penerbitan</span></div>
+              <div class="prog-track"><div class="prog-fill" style="width:50%;background:#3b82d4;"></div></div>
+            </div>
+            <div class="prog-row">
+              <div class="prog-lbl"><span>Sukuan 4 (Okt – Dis 2026)</span><span style="color:#9ca3af;">Dalam proses...</span></div>
+              <div class="prog-track"><div class="prog-fill" style="width:0%;background:#7c5cd8;"></div></div>
+            </div>
+            <div class="prog-stats">
+              <div class="prog-stat">Jumlah Terbit: <strong style="color:#16a34a;">8</strong></div>
+              <div class="prog-stat">Antarabangsa: <strong style="color:#7c5cd8;">7</strong></div>
+              <div class="prog-stat">Nasional: <strong style="color:#16a34a;">1</strong></div>
+              <div class="prog-stat">Jabatan Terlibat: <strong>3</strong></div>
+              <div class="prog-stat">Penulis Unik: <strong>~16</strong></div>
+              <div class="prog-stat">Penerbit Unik: <strong>6</strong></div>
+            </div>
+          </div>
+
+          <div class="footer">
+            Unit Penyelidikan, Inovasi dan Komersialan (UPIK) &nbsp;|&nbsp; Politeknik Banting &nbsp;|&nbsp; Data Penyelidikan 2026
+            <br/><span>Made with IBM Bob</span>
+          </div>
+        </div><!-- /page-home -->
+
+
+        <!-- ════ PAGE: ACTIVITIES ════ -->
+        <div id="page-activities" class="page">
+          <div class="sec-title" style="margin-top:0;">Log Aktiviti Penerbitan 2026</div>
+          <div class="act-list">
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot" style="background:#3b82d4;"></div><div class="act-line"></div></div>
+              <div class="act-body">
+                <div class="act-title">Penerbitan #8 — A Usability Evaluation Model for Mobile Learning</div>
+                <div class="act-meta">27 Mei 2026 &nbsp;·&nbsp; <span class="badge b-intl">Antarabangsa</span> &nbsp;·&nbsp; <span class="badge b-q">Q2</span></div>
+                <div class="act-desc">Diterbitkan dalam AIP Conference Proceedings (ICoESAT 2025). Penulis: Nor Hanina Zainal Abidin, Ts. Dr. Norhanisha Yusof (PBU) + 2 lain.</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot" style="background:#3b82d4;"></div><div class="act-line"></div></div>
+              <div class="act-body">
+                <div class="act-title">Penerbitan #7 — YUAN: Interactive Mobile App for Chinese Language Learning</div>
+                <div class="act-meta">27 Mei 2026 &nbsp;·&nbsp; <span class="badge b-intl">Antarabangsa</span> &nbsp;·&nbsp; <span class="badge b-q">Q2</span></div>
+                <div class="act-desc">Diterbitkan dalam AIP Conference Proceedings (ICoESAT 2025). Penulis: Ts. Dr. Norhanisha Yusof (PBU), Kong Ji Yu Ivan + 4 lain.</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot" style="background:#3b82d4;"></div><div class="act-line"></div></div>
+              <div class="act-body">
+                <div class="act-title">Penerbitan #3 — POWLinkBudget: Mobile Application for Power Link Budget Learning</div>
+                <div class="act-meta">27 Mei 2026 &nbsp;·&nbsp; <span class="badge b-intl">Antarabangsa</span> &nbsp;·&nbsp; <span class="badge b-q">Q3</span></div>
+                <div class="act-desc">Diterbitkan dalam AIP Conference Proceedings. Penulis: Masturina Natalia Mohd Nor, Mohd Dinil Haq Sahbudin, Nur Naimah Mohamad.</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot" style="background:#7c5cd8;"></div><div class="act-line"></div></div>
+              <div class="act-body">
+                <div class="act-title">Penerbitan #6 — Acceptance of TRIZ Methodology Problem-Solving</div>
+                <div class="act-meta">28 Apr 2026 &nbsp;·&nbsp; <span class="badge b-intl">Antarabangsa</span> &nbsp;·&nbsp; <span class="badge b-q">Q2</span></div>
+                <div class="act-desc">Diterbitkan oleh Atlantis Press (ICAR-T1 2025). Penulis: Dr. Nurkhuzaimah Fazreen (PBU) + 5 lain.</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot" style="background:#7c5cd8;"></div><div class="act-line"></div></div>
+              <div class="act-body">
+                <div class="act-title">Penerbitan #5 — Improving Community System with RFID Technology</div>
+                <div class="act-meta">1 Apr 2026 &nbsp;·&nbsp; <span class="badge b-intl">Antarabangsa</span> &nbsp;·&nbsp; <span class="badge b-q">Q2</span></div>
+                <div class="act-desc">Diterbitkan dalam Journal of Digital System Development, UUM (e-ISSN: 3009-156X). Penulis: Ts. Dr. Norhanisha Yusof (PBU) + 3 lain.</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot" style="background:#ea580c;"></div><div class="act-line"></div></div>
+              <div class="act-body">
+                <div class="act-title">Penerbitan #4 — Pengurusan Sukan Ragbi Wanita di Politeknik Malaysia</div>
+                <div class="act-meta">Julai 2026 &nbsp;·&nbsp; <span class="badge b-nas">Nasional</span> &nbsp;·&nbsp; <span class="badge b-q">Q3</span></div>
+                <div class="act-desc">Diterbitkan oleh Politeknik Banting Selangor (E-Digest Impak HEP POLYCC). Penulis: Hermizul Napis, Rosli Rais, Muhamad Fikri Shahkhirin.</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot" style="background:#ea580c;"></div><div class="act-line"></div></div>
+              <div class="act-body">
+                <div class="act-title">Penerbitan #2 — How Do Polytechnic Students Perceive Impact of Advanced AI?</div>
+                <div class="act-meta">30 Julai 2026 &nbsp;·&nbsp; <span class="badge b-intl">Antarabangsa</span> &nbsp;·&nbsp; <span class="badge b-q">Q3</span></div>
+                <div class="act-desc">Diterbitkan dalam prosiding IRISECON 2026 (e-ISBN: 978-967-2765-27-1). Penulis: Letchumanan Shanmugam, Geetha Nadesan, Suntheren Yoganathan.</div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot" style="background:#16a34a;"></div></div>
+              <div class="act-body">
+                <div class="act-title">Penerbitan #1 — Kefahaman Pelajar Pendidikan Moral Terhadap Konsep Altruisme</div>
+                <div class="act-meta">1 Ogos 2026 &nbsp;·&nbsp; <span class="badge b-intl">Antarabangsa</span> &nbsp;·&nbsp; <span class="badge b-q">Q3</span></div>
+                <div class="act-desc">Diterbitkan dalam Asian Scholars Network (7TH ICBEISS 2026). Penulis: Halimatus Saadiah Kariya, Siti Nazilah Hamzah, Suntheren Yoganathan.</div>
+              </div>
+            </div>
+          </div>
+          <div class="footer" style="margin-top:30px;">
+            Unit Penyelidikan, Inovasi dan Komersialan (UPIK) &nbsp;|&nbsp; Politeknik Banting &nbsp;|&nbsp; Data Penyelidikan 2026
+            <br/><span>Made with IBM Bob</span>
+          </div>
+        </div><!-- /page-activities -->
+
+
+        <!-- ════ PAGE: REPORTS ════ -->
+        <div id="page-reports" class="page">
+          <div class="sec-title" style="margin-top:0;">Laporan &amp; Eksport Data</div>
+          <div class="report-grid">
+            <div class="report-card">
+              <div class="report-icon">📄</div>
+              <div class="report-title">Laporan Ringkasan KPI 2026</div>
+              <div class="report-desc">Laporan keseluruhan pencapaian KPI penerbitan penyelidikan warga PBU bagi tahun 2026, mengikut jabatan, tahap, dan sukuan.</div>
+              <button class="report-btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+              <div class="report-stat-row">
+                <div class="report-stat">Rekod: <strong>8</strong></div>
+                <div class="report-stat">Intl (7) + Nas (1)</div>
+              </div>
+            </div>
+            <div class="report-card r-purple">
+              <div class="report-icon">🌍</div>
+              <div class="report-title">Laporan Penerbitan Antarabangsa</div>
+              <div class="report-desc">Senarai lengkap semua penerbitan di peringkat antarabangsa termasuk nama penerbit, DOI/ISBN, dan tarikh terbit.</div>
+              <button class="report-btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+              <div class="report-stat-row">
+                <div class="report-stat">Jumlah: <strong>7</strong></div>
+                <div class="report-stat">Penerbit unik: <strong>5</strong></div>
+              </div>
+            </div>
+            <div class="report-card r-green">
+              <div class="report-icon">📅</div>
+              <div class="report-title">Laporan Ikut Sukuan KPI</div>
+              <div class="report-desc">Pecahan penerbitan mengikut sukuan KPI untuk pemantauan pencapaian tahunan dan penyerahan laporan sukuan.</div>
+              <button class="report-btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+              <div class="report-stat-row">
+                <div class="report-stat">S2: <strong>4</strong></div>
+                <div class="report-stat">S3: <strong>4</strong></div>
+                <div class="report-stat">S4: <strong>–</strong></div>
+              </div>
+            </div>
+            <div class="report-card r-orange">
+              <div class="report-icon">🏫</div>
+              <div class="report-title">Laporan Ikut Jabatan</div>
+              <div class="report-desc">Analisa sumbangan penerbitan penyelidikan mengikut jabatan atau unit dalam politeknik untuk perbandingan prestasi.</div>
+              <button class="report-btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+              <div class="report-stat-row">
+                <div class="report-stat">JTMK: <strong>6</strong></div>
+                <div class="report-stat">JPA: <strong>1</strong></div>
+                <div class="report-stat">PBU: <strong>1</strong></div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 4px rgba(0,0,0,0.07);margin-top:18px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px;">ℹ️ Nota Eksport</div>
+            <div style="font-size:12px;color:#57606a;line-height:1.7;">
+              • Klik <strong>"Cetak / Simpan PDF"</strong> untuk mencetak atau menyimpan laporan sebagai PDF menggunakan fungsi cetak browser.<br/>
+              • Untuk eksport dalam format <strong>Excel (.xlsx)</strong> atau <strong>CSV</strong>, sila hubungi pegawai UPIK untuk dapatkan fail data mentah.<br/>
+              • Semua data adalah berdasarkan rekod yang dikemaskini pada <strong>2 Oktober 2026</strong>.
+            </div>
+          </div>
+          <div class="footer" style="margin-top:30px;">
+            Unit Penyelidikan, Inovasi dan Komersialan (UPIK) &nbsp;|&nbsp; Politeknik Banting &nbsp;|&nbsp; Data Penyelidikan 2026
+            <br/><span>Made with IBM Bob</span>
+          </div>
+        </div><!-- /page-reports -->
+
+      </div><!-- /container -->
+    </div><!-- /main -->
+  </div><!-- /shell -->
+</div><!-- /dashboard-screen -->
+
+
+<script>
+/* ══════════════════════════════════════
+   LOGIN / LOGOUT
+══════════════════════════════════════ */
+function doLogin() {
+  var user = document.getElementById('inp-user').value.trim();
+  var pass = document.getElementById('inp-pass').value.trim();
+  var err  = document.getElementById('login-err');
+  if (!user || !pass) {
+    err.textContent = 'Sila masukkan No. Pekerja/Email dan Kata Laluan.';
+    return;
+  }
+  err.textContent = '';
+  // Set user display info
+  var displayName = user.length > 20 ? user.substring(0, 20) + '…' : user;
+  document.getElementById('user-name-display').textContent = displayName;
+  document.getElementById('dropdown-name').textContent = user;
+  document.getElementById('user-avatar').textContent = user.charAt(0).toUpperCase();
+  // Show dashboard
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard-screen').style.display = 'block';
+}
+
+function doLogout() {
+  closeDropdown();
+  document.getElementById('dashboard-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('inp-user').value = '';
+  document.getElementById('inp-pass').value = '';
+  document.getElementById('login-err').textContent = '';
+  // Reset search
+  clearSearch();
+  // Reset nav
+  navTo('home', document.querySelector('.nav-item'));
+}
+
+// Allow Enter key on login fields
+document.getElementById('inp-pass').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+document.getElementById('inp-user').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('inp-pass').focus();
+});
+
+/* ══════════════════════════════════════
+   USER DROPDOWN
+══════════════════════════════════════ */
+function toggleDropdown() {
+  document.getElementById('user-dropdown').classList.toggle('open');
+}
+function closeDropdown() {
+  document.getElementById('user-dropdown').classList.remove('open');
+}
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  var u = document.querySelector('.header-user');
+  if (u && !u.contains(e.target)) closeDropdown();
+});
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+function navTo(page, el) {
+  document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  var target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+  // Show search banner only on home page if search is active
+  var q = document.getElementById('global-search').value.trim();
+  if (q) {
+    document.getElementById('search-banner').classList.toggle('visible', page === 'home');
+  }
+}
+
+/* ══════════════════════════════════════
+   TABLE FILTER (badge buttons)
+══════════════════════════════════════ */
+var currentFilter = 'all';
+var currentSearch = '';
+
+function filter(val, btn) {
+  currentFilter = val;
+  document.querySelectorAll('.fbtn').forEach(function(b) { b.classList.remove('on'); });
+  if (btn) btn.classList.add('on');
+  applyTableView();
+}
+
+function quickFilter(val) {
+  currentFilter = val;
+  var map = { 'JTMK': 'fb-jtmk', 'JPA': 'fb-jpa', 'ANTARABANGSA': 'fb-intl' };
+  document.querySelectorAll('.fbtn').forEach(function(b) { b.classList.remove('on'); });
+  var btn = document.getElementById(map[val]);
+  if (btn) btn.classList.add('on');
+  applyTableView();
+}
+
+/* ══════════════════════════════════════
+   GLOBAL SEARCH
+══════════════════════════════════════ */
+function onSearch(q) {
+  currentSearch = q.toLowerCase().trim();
+  var clearBtn = document.getElementById('search-clear');
+  clearBtn.style.display = currentSearch ? 'block' : 'none';
+
+  if (currentSearch) {
+    // Navigate to home page to show results
+    navTo('home', document.querySelector('.nav-item[onclick*="home"]'));
+    document.querySelector('.nav-item[onclick*="home"]').classList.add('active');
+  }
+  applyTableView();
+
+  // Update search banner
+  var banner = document.getElementById('search-banner');
+  if (currentSearch) {
+    banner.classList.add('visible');
+    document.getElementById('search-banner-text').textContent =
+      '🔍 Hasil carian untuk: "' + q.trim() + '"';
+  } else {
+    banner.classList.remove('visible');
+  }
+}
+
+function clearSearch() {
+  document.getElementById('global-search').value = '';
+  document.getElementById('search-clear').style.display = 'none';
+  document.getElementById('search-banner').classList.remove('visible');
+  currentSearch = '';
+  applyTableView();
+}
+
+/* ══════════════════════════════════════
+   COMBINED FILTER + SEARCH
+══════════════════════════════════════ */
+function applyTableView() {
+  var rows = document.querySelectorAll('#tbody tr');
+  var n = 0;
+  rows.forEach(function(r) {
+    var passFilter =
+      currentFilter === 'all' ||
+      r.dataset.j === currentFilter ||
+      r.dataset.t === currentFilter ||
+      r.dataset.s === currentFilter;
+    var passSearch = !currentSearch ||
+      (r.dataset.search || '').toLowerCase().includes(currentSearch);
+    var show = passFilter && passSearch;
+    r.style.display = show ? '' : 'none';
+    r.classList.toggle('highlight', show && !!currentSearch);
+    if (show) n++;
+  });
+  document.getElementById('count').textContent =
+    'Menunjukkan ' + n + ' daripada 8 rekod' +
+    (currentSearch ? ' — carian: "' + currentSearch + '"' : '');
+}
+</script>
+
+</body>
+</html>
